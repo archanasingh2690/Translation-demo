@@ -1,0 +1,52 @@
+{
+    "transactionId": "cb414a40-b2e2-4d1d-8dc3-75924b55881b",
+    "customerTransactionId": "X-customer-transaction-id",
+    "clientId": "X-client-id",
+    "alerts": null,
+    "user": {
+        "name": "Aabiden",
+        "countryCode": "US",
+        "locale": "en",
+        "accountsInfo": [
+            {
+                "accountNumber": "272794700",
+                "roleName": "ADMIN"
+            },
+            {
+                "accountNumber": "272794800",
+                "roleName": "USER"
+            },
+            {
+                "accountNumber": "272794900",
+                "roleName": "INVITED"
+            }
+        ]
+    },
+    "accountNumber": "272794700",
+    "balanceSummaries": [
+        {
+            "countryCode": "US",
+            "amountType": "Balance Due",
+            "money": {
+                "amount": 112.92,
+                "currency": "USD"
+            }
+        },
+        {
+            "countryCode": "US",
+            "amountType": "Disputed",
+            "money": {
+                "amount": 42.33,
+                "currency": "USD"
+            }
+        },
+        {
+            "countryCode": "US",
+            "amountType": "Disputed",
+            "money": {
+                "amount": 42.33,
+                "currency": "USD"
+            }
+        }
+    ]
+}

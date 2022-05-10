@@ -1,0 +1,34 @@
+{
+    "transactionId": "cb414a40-b2e2-4d1d-8dc3-75924b55881b",
+    "customerTransactionId": "X-customer-transaction-id",
+    "clientId": "X-client-id",
+    "alerts": null,
+    "user": null,
+    "accountNumber": "272794700",
+    "balanceSummaries": [
+        {
+            "countryCode": "US",
+            "amountType": "Balance Due",
+            "money": {
+                "amount": 112.92,
+                "currency": "USD"
+            }
+        },
+        {
+            "countryCode": "US",
+            "amountType": "Disputed",
+            "money": {
+                "amount": 42.33,
+                "currency": "USD"
+            }
+        },
+        {
+            "countryCode": "US",
+            "amountType": "Disputed",
+            "money": {
+                "amount": 42.33,
+                "currency": "USD"
+            }
+        }
+    ]
+}

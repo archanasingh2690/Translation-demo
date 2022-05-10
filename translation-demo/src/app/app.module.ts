@@ -4,10 +4,12 @@ import { AppComponent } from './app.component';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { HttpLoaderFactory } from './HttpLoaderFactory';
+import { AccountFormatPipe } from './account.pipe';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AccountFormatPipe
   ],
   imports: [
     BrowserModule,
