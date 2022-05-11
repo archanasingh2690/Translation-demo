@@ -29,13 +29,15 @@ export class AppComponent implements OnInit {
     //let balanceSummaryrequest: BalanceSummaryRequest = { accountNumber: accountNumber } as BalanceSummaryRequest;
     this.userAccountInfoService.getAccountBalanceSummaries(accountNumber).subscribe(
       (data: any) => {
-        this.billAccountSummary = data;
-        if (this.selectedAccount === '' || this.selectedAccount == null) {
-          this.user = this.billAccountSummary.user;
+        if (data != undefined) {
+          this.billAccountSummary = data;
+          if (this.selectedAccount === '' || this.selectedAccount == null) {
+            this.user = this.billAccountSummary.user;
+          }
+          this.selectedAccount = this.billAccountSummary.accountNumber;
+          this.summaryAccounts = this.makeTileData(this.billAccountSummary.balanceSummaries);
         }
-        this.selectedAccount = this.billAccountSummary.accountNumber;
-        this.summaryAccounts = this.makeTileData(this.billAccountSummary.balanceSummaries);
-      });
+      }).unsubscribe();
   }
   makeTileData(data: BalanceSummaryModel[]): TileModel[] {
     let tileDataArr: TileModel[] = [];
