@@ -26,7 +26,6 @@ export class AppComponent implements OnInit {
     //this.translate.use(language);
   }
   getAccountBalanceSummary(accountNumber: string) {
-    //let balanceSummaryrequest: BalanceSummaryRequest = { accountNumber: accountNumber } as BalanceSummaryRequest;
     this.userAccountInfoService.getAccountBalanceSummaries(accountNumber).subscribe(
       (data: any) => {
         if (data != undefined) {

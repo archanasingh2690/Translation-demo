@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpLoaderFactory } from './HttpLoaderFactory';
 import { AccountFormatPipe } from './account.pipe';
+import { HttpInterceptor } from './http.interceptor';
+import { UserAccountInfoService } from './user-account-info.service';
 
 @NgModule({
   declarations: [
@@ -14,15 +16,19 @@ import { AccountFormatPipe } from './account.pipe';
   imports: [
     BrowserModule,
     HttpClientModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient],
-            },
-        })
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    })
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: HttpInterceptor,
+    multi: true
+  }, UserAccountInfoService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
