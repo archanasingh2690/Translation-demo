@@ -6,7 +6,7 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { HttpLoaderFactory } from './HttpLoaderFactory';
 import { AccountFormatPipe } from './account.pipe';
 import { HttpInterceptor } from './http.interceptor';
-import { UserAccountInfoService } from './user-account-info.service';
+import { UserAccountInfoApiService, UserAccountInfoService } from './user-account-info.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +28,7 @@ import { UserAccountInfoService } from './user-account-info.service';
     provide: HTTP_INTERCEPTORS,
     useClass: HttpInterceptor,
     multi: true
-  }, UserAccountInfoService],
+  }, UserAccountInfoService,UserAccountInfoApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

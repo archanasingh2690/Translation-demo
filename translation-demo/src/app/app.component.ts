@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AccountInfo, BalanceSummaryModel, BalanceSummaryRequest, TileModel } from './balance-summary-request';
+import { subscribeOn, Subscription } from 'rxjs';
+import { AccountInfo, BalanceSummaryModel, BalanceSummaryRequest, BillAccountSummary, CurrencyModel, iconNames, TileModel } from './balance-summary-request';
 import { UserAccountInfoService } from './user-account-info.service';
 
 @Component({
@@ -8,63 +9,101 @@ import { UserAccountInfoService } from './user-account-info.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'translation-demo';
   accountNumber = "123412341";
-  billAccountSummary: AccountInfo = {} as AccountInfo;
+  billAccountSummary: BillAccountSummary = {} as BillAccountSummary;
+  selectAccountSub = new Subscription();
+  billAccountSummarySub = new Subscription();
   selectedAccount!: string;
-  user: any;
-  summaryAccounts: any;
+  userAccounts: AccountInfo[] = [];
+  summaryAccounts: TileModel[] = [];
+  balanceCurrencyText: string = '';
   constructor(private userAccountInfoService: UserAccountInfoService) {
-    //translate.setDefaultLang('en');
-    //translate.use('en');
+    this.selectedAccount = '';
+  }
+  ngOnDestroy(): void {
+    this.selectAccountSub.unsubscribe();
+    this.billAccountSummarySub.unsubscribe();
   }
   ngOnInit(): void {
-    this.getAccountBalanceSummary('');
+    this.intializeBalanceData();
+    this.userAccountInfoService.getAccountBalanceSummaries('');
   }
-  useLanguage(language: string): void {
-    //this.translate.use(language);
+  intializeBalanceData() {
+    this.billAccountSummarySub = this.userAccountInfoService.getBillAccountSummarySub().subscribe(value => {
+      this.billAccountSummary = value;
+      if (this.billAccountSummary.user != null) {
+        this.userAccounts = this.billAccountSummary.user.accountsInfo;
+      }
+      if (this.billAccountSummary != null) {
+        this.summaryAccounts = this.makeTileData(this.billAccountSummary.balanceSummaries);
+      }
+    });
+    this.selectAccountSub = this.userAccountInfoService.getSelectedAccountNumberSub().subscribe(value => {
+      this.selectedAccount = value;
+    });
   }
-  getAccountBalanceSummary(accountNumber: string) {
-    this.userAccountInfoService.getAccountBalanceSummaries(accountNumber).subscribe(
-      (data: any) => {
-        if (data != undefined) {
-          this.billAccountSummary = data;
-          if (this.selectedAccount === '' || this.selectedAccount == null) {
-            this.user = this.billAccountSummary.user;
-          }
-          this.selectedAccount = this.billAccountSummary.accountNumber;
-          this.summaryAccounts = this.makeTileData(this.billAccountSummary.balanceSummaries);
-        }
-      }).unsubscribe();
+  onAccountSelect(e: any) {
+    this.userAccountInfoService.onChangeAccountNumber(e.target.value);
+  }
+  addMoneyByCurrency(arr: CurrencyModel[], curObj: CurrencyModel): CurrencyModel[] {
+    const arrLen = arr.length;
+    const preObj = arr[arrLen - 1];
+    if (preObj && preObj.currency === curObj.currency) {
+      preObj.amount += curObj.amount;
+    }
+    else arr.push(curObj);
+    return arr;
+  }
+  validateMoneyTile(tile: TileModel): void {
+    if (tile.money.length === 0)
+      tile.money.push({});
   }
   makeTileData(data: BalanceSummaryModel[]): TileModel[] {
     let tileDataArr: TileModel[] = [];
     let iconName: string;
+    let tileObj: TileModel;
     data.map(item => {
+      const tile: TileModel = {
+        label: item.amountType,
+        money: [],
+        icon: iconName
+      };
       switch (item.amountType) {
         case "Balance Due":
-          iconName = 'Test1';
+          tileObj = {
+            label: 'Balance Due',
+            money: this.addMoneyByCurrency([], item.money),
+            icon: iconNames.unit_measurement_time
+          };
+          tileDataArr.push(tileObj);
           break;
         case "Disputed":
-          iconName = 'Test2';
+          tileObj = {
+            label: 'Disputed',
+            money: this.addMoneyByCurrency([], item.money),
+            icon: iconNames.brand_stop_hold_s
+          };
+          tileDataArr.push(tileObj);
           break;
         case "Past Due":
-          iconName = 'Test3';
+          tileObj = {
+            label: 'Past Due',
+            money: this.addMoneyByCurrency([], item.money),
+            icon: iconNames.status_warning
+          };
+          tileDataArr.push(tileObj);
           break;
         default:
-          iconName = 'Test4';
+          iconName = iconNames.status_warning;
       }
-
-      let tile = {
-        label: item.amountType,
-        amount: item.money.amount,
-        currency: item.money.currency,
-        icon: iconName
-      }
-      tileDataArr.push(tile);
     });
-
+    tileDataArr.map(tile => this.validateMoneyTile(tile));
+    if (tileDataArr.find(x => x.label === 'Balance Due')?.money?.length === 1) {
+      this.balanceCurrencyText = `Amounts are shown in ${tileDataArr.find(x => x.label === 'Balance Due')?.money[0].currency}`;
+    }
+    else this.balanceCurrencyText = 'Balances are in multiple currencies';
     return tileDataArr;
   }
 }

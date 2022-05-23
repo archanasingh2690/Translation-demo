@@ -36,13 +36,13 @@
             "countryCode": "US",
             "amountType": "Disputed",
             "money": {
-                "amount": 42.33,
+                "amount": 100.33,
                 "currency": "USD"
             }
         },
         {
             "countryCode": "US",
-            "amountType": "Disputed",
+            "amountType": "Past Due",
             "money": {
                 "amount": 42.33,
                 "currency": "USD"
