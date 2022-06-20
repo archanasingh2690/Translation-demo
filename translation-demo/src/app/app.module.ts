@@ -7,11 +7,17 @@ import { HttpLoaderFactory } from './HttpLoaderFactory';
 import { AccountFormatPipe } from './account.pipe';
 import { HttpInterceptor } from './http.interceptor';
 import { UserAccountInfoApiService, UserAccountInfoService } from './user-account-info.service';
+import { AppRoutingModule } from './app.routing.module';
+import { InvModule } from './modules/inv/inv.module';
+import { AlertService } from './alert.service';
+import { AlertComponent } from './alert/alert.component';
+import { ErrorCatchingInterceptor } from './http-error.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AccountFormatPipe
+    AccountFormatPipe,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -22,13 +28,18 @@ import { UserAccountInfoApiService, UserAccountInfoService } from './user-accoun
         useFactory: HttpLoaderFactory,
         deps: [HttpClient],
       },
-    })
+    }),
+    AppRoutingModule,
+    InvModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: HttpInterceptor,
     multi: true
-  }, UserAccountInfoService,UserAccountInfoApiService],
+  },
+  { provide: HTTP_INTERCEPTORS, useClass: ErrorCatchingInterceptor, multi: true },
+    UserAccountInfoService, UserAccountInfoApiService,
+    AlertService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

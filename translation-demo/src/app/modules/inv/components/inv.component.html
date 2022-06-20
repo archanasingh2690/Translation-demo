@@ -1,0 +1,5 @@
+<p>inv works!</p>
+<button routerLink="/inv-detail" [queryParams]="{ id: 'abc'}">Invoice Details</button>  
+<button routerLink="/ship-detail">Ship Details</button>  
+<button (click)="callApi()"> Test API Error Interceptor</button>
+<router-outlet></router-outlet>  

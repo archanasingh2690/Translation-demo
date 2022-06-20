@@ -1,0 +1,4 @@
+<p>alert works!</p>
+<ng-container *ngIf="alertService.apiError.length > 0">
+    <p>{{alertService.apiError[0].message}}</p>
+</ng-container>
