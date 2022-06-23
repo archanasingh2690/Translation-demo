@@ -4,10 +4,10 @@ import { Observable, throwError } from "rxjs";
 
 @Injectable()
 export class AlertService {
-    apiError: Alert[] = [];
+    alerts: Alert[] = [];
     constructor() { }
     handleError(error: Alert[]): Observable<never> {
-        this.apiError = error;
+        this.alerts = error;
         return throwError(error);
     }
 }
